@@ -21,3 +21,16 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.gradle
+.idea
+Code Sharing Platform/Work with the database
+Code Sharing Platform/Super secret snippets
+Code Sharing Platform/POST updates
+Code Sharing Platform/Show the code
+Code Sharing Platform/Snippets feed
+Code Sharing Platform/task/build/test-results
+Code Sharing Platform/task/build
+Code Sharing Platform/lesson-info.yaml
+.DS_Store
+course-remote-info.yaml
+course-info.yaml
