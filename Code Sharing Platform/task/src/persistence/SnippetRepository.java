@@ -41,4 +41,8 @@ public class SnippetRepository implements ObjectRepository<Snippet> {
         this.repository.remove(id);
         return snippet;
     }
+
+    public void update(int id, Snippet snippet) {
+        repository.replace(id, snippet);
+    }
 }

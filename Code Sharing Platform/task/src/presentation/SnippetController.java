@@ -1,17 +1,17 @@
 package presentation;
 
+import businesslayer.NewSnippetDTO;
 import businesslayer.Snippet;
 import businesslayer.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -32,18 +32,47 @@ public class SnippetController {
     )
     public String getCodeView() {
         var snippet = snippetService.getById(0);
+        var replacements = new HashMap<String, String>();
+        replacements.put("@snippet", snippet.getCode());
+        replacements.put("@date", snippet.getDate().toString());
+
+        return getView("./src/public/snippetResponse.html", replacements);
+    }
+
+    @RequestMapping(
+            value = "/code/new",
+            method = RequestMethod.GET,
+            produces = "text/html"
+    )
+    public String updateSnippetView() {
+        return getView("./src/public/newSnippetPage.html", new HashMap<String, String>());
+    }
+
+    @PostMapping("/api/code/new")
+    public ResponseEntity<Snippet> updateSnippet(@RequestBody NewSnippetDTO snippetDTO) {
+        snippetService.update(snippetDTO);
+        return new ResponseEntity<Snippet>(new Snippet(), HttpStatus.OK);
+    }
+
+    private String getView(String path, HashMap<String, String> replacements) {
         StringBuilder result = new StringBuilder();
 
         try {
-            File myObj = new File("./src/presentation/snippetResponse.html");
+            File myObj = new File(path);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                if (Objects.equals(data, "@snippet")) {
-                    result.append("\n").append(snippet.getCode()).append("\n");
+                if (replacements.isEmpty()) {
+                    result.append(data);
                     continue;
                 }
-                result.append(data);
+
+                var replacement = replacements.get(data);
+                if (Objects.equals(replacement, null)) {
+                    result.append(data);
+                    continue;
+                }
+                result.append("\n").append(replacement).append("\n");
             }
             myReader.close();
         } catch (FileNotFoundException e) {

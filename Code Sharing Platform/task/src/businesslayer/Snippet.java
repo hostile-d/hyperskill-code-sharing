@@ -1,30 +1,37 @@
 package businesslayer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+
+@Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Snippet {
     @JsonIgnore
     private Integer id;
+
     private String code;
 
-    public Snippet(Integer id, String code) {
+    private LocalDateTime date;
+
+    public Snippet(Integer id, String code, LocalDateTime date) {
         this.id = id;
         this.code = code;
+        this.date = date;
     }
 
-    public Integer getId() {
-        return id;
-    }
+    public Snippet(){}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public String getDate() {
+        if (date != null) {
+            return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return null;
     }
 }
