@@ -5,13 +5,13 @@ import businesslayer.Snippet;
 import businesslayer.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -25,11 +25,7 @@ public class SnippetController {
         return new ResponseEntity<Snippet>(snippetService.getById(0), HttpStatus.OK);
     }
 
-    @RequestMapping(
-            value = "/code",
-            method = RequestMethod.GET,
-            produces = "text/html"
-    )
+    @GetMapping(value = "/code", produces = MediaType.TEXT_HTML_VALUE)
     public String getCodeView() {
         var snippet = snippetService.getById(0);
         var replacements = new HashMap<String, String>();
@@ -39,11 +35,7 @@ public class SnippetController {
         return getView("./src/public/snippetResponse.html", replacements);
     }
 
-    @RequestMapping(
-            value = "/code/new",
-            method = RequestMethod.GET,
-            produces = "text/html"
-    )
+    @GetMapping(value = "/code/new", produces = MediaType.TEXT_HTML_VALUE)
     public String updateSnippetView() {
         return getView("./src/public/newSnippetPage.html", new HashMap<String, String>());
     }
