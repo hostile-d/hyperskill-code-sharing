@@ -3,33 +3,36 @@ package businesslayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import persistence.SnippetRepository;
+import presentation.NewSnippetRequestDTO;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 @Service
 public class SnippetService {
-    private SnippetRepository repository;
+    private final SnippetRepository repository;
 
     @Autowired
     public SnippetService(SnippetRepository repository) {
         this.repository = repository;
-        repository.store(new Snippet(0,"public static void main(String[] args) {\n" +
-                "    SpringApplication.run(CodeSharingPlatform.class, args);\n" +
-                "}", LocalDateTime.now()));
     }
 
     public Snippet getById(Integer id) {
         return repository.getById(id);
     }
 
-    public void store(Snippet snippet) {
-        snippet.setDate(LocalDateTime.now());
-        repository.store(snippet);
+    public List<Snippet> getLatest(Integer amount) {
+        return repository.getLatest(amount);
     }
 
-    public void update(NewSnippetDTO snippetDTO) {
-        var snippet = new Snippet(0, snippetDTO.getCode(), LocalDateTime.now());
+    public Integer store(NewSnippetRequestDTO snippetDTO) {
+        var id = repository.size() > 0 ? repository.size() + 1 : 1;
+        var snippet = new Snippet(id, snippetDTO.getCode(), LocalDateTime.now());
+        repository.store(snippet);
+        return id;
+    }
+
+    public void update(Snippet snippet) {
         repository.update(snippet.getId(), snippet);
     }
 }

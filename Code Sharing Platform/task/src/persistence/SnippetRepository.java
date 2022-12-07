@@ -3,9 +3,8 @@ package persistence;
 import businesslayer.Snippet;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class SnippetRepository implements ObjectRepository<Snippet> {
@@ -44,5 +43,15 @@ public class SnippetRepository implements ObjectRepository<Snippet> {
 
     public void update(int id, Snippet snippet) {
         repository.replace(id, snippet);
+    }
+
+    public List<Snippet> getLatest(Integer amount) {
+        List<Snippet> snippets = new ArrayList<>(repository.values());
+        snippets.sort(Collections.reverseOrder());
+        return snippets.stream().limit(amount).collect(Collectors.toList());
+    }
+
+    public Integer size() {
+        return repository.size();
     }
 }

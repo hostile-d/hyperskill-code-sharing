@@ -1,6 +1,5 @@
 package businesslayer;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -12,13 +11,18 @@ import java.util.Date;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Snippet {
+public class Snippet implements Comparable<Snippet> {
     @JsonIgnore
     private Integer id;
 
     private String code;
 
     private LocalDateTime date;
+
+    @Override
+    public int compareTo(Snippet snippet) {
+        return this.date.compareTo(snippet.date);
+    }
 
     public Snippet(Integer id, String code, LocalDateTime date) {
         this.id = id;
