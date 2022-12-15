@@ -1,7 +1,7 @@
-package presentation;
+package platform.presentation;
 
-import businesslayer.Snippet;
-import businesslayer.SnippetService;
+import platform.businesslayer.Snippet;
+import platform.businesslayer.SnippetService;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+import java.util.Collection;
 
 @Controller
 public class SnippetController {
     @Autowired
     SnippetService snippetService;
-    private final Integer LATEST_AMOUNT = 10;
 
     @PostMapping("/api/code/new")
     public ResponseEntity<NewSnippetResponseDTO> addSnippet(@RequestBody NewSnippetRequestDTO snippetDTO) {
@@ -25,24 +25,23 @@ public class SnippetController {
 
     @GetMapping("/api/code/{id}")
     public ResponseEntity<Snippet> getCodeData(@PathVariable @NotNull Integer id) {
-        return new ResponseEntity<Snippet>(snippetService.getById(id), HttpStatus.OK);
+        return new ResponseEntity<Snippet>(snippetService.findById(id).orElse(null), HttpStatus.OK);
     }
 
     @GetMapping("/api/code/latest")
-    public ResponseEntity<List<Snippet>> getLatest() {
-        return new ResponseEntity<List<Snippet>>(snippetService.getLatest(LATEST_AMOUNT), HttpStatus.OK);
+    public ResponseEntity<Collection<Snippet>> getLatest() {
+        return new ResponseEntity<Collection<Snippet>>(snippetService.getLatest(), HttpStatus.OK);
     }
 
     @GetMapping("/code/{id}")
     public String getCodeView(@PathVariable @NotNull Integer id, Model model) {
-        var snippet = snippetService.getById(id);
-        model.addAttribute("snippet", snippet);
+        model.addAttribute("snippet", snippetService.findById(id).orElse(null));
         return "snippet";
     }
 
     @GetMapping("/code/latest")
     public String getCodeView(Model model) {
-        model.addAttribute("snippets", snippetService.getLatest(LATEST_AMOUNT));
+        model.addAttribute("snippets", snippetService.getLatest());
         return "latestSnippets";
     }
 

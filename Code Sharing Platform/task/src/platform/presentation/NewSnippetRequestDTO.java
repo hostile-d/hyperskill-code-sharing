@@ -1,4 +1,4 @@
-package presentation;
+package platform.presentation;
 
 import lombok.Data;
 

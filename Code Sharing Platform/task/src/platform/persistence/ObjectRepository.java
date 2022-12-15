@@ -1,4 +1,4 @@
-package persistence;
+package platform.persistence;
 
 public interface ObjectRepository<T> {
 
