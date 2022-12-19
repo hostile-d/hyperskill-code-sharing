@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 
 @Data
@@ -26,20 +27,42 @@ public class Snippet implements Comparable<Snippet> {
     private Integer id;
 
     @Column
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private UUID uuid;
+
+    @Column
     private String code;
 
     @Column
     private LocalDateTime date;
+
+    @Column
+    private Integer time;
+
+    @Column
+    private Integer views;
+
+    @JsonIgnore
+    @Column
+    private Boolean viewsRestriction;
+
+    @JsonIgnore
+    @Column
+    private Boolean timeRestriction;
 
     @Override
     public int compareTo(Snippet snippet) {
         return this.date.compareTo(snippet.date);
     }
 
-    public String getDate() {
-        if (date != null) {
-            return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public UUID getUuid() {
+        if (uuid == null) {
+            return UUID.randomUUID();
         }
-        return null;
+        return uuid;
     }
 }
